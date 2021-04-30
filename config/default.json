@@ -1,0 +1,5 @@
+{
+    "port":5000,
+    "jwtSecretKey":"secret key for token",
+    "mongoUri":"mongodb+srv://Vlad:0po0po0po@cluster0.hvucr.mongodb.net/mernapp?retryWrites=true&w=majority"
+}
