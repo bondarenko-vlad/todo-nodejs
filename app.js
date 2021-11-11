@@ -7,6 +7,7 @@ const app = express()
 app.use(express.json({extended:true})) // мидлвейр для обработки json
 app.use('/api/auth',require('./routes/auth.routes')) // обработка роута
 app.use('/api/todo',require('./routes/todo.routes'))
+app.use('/api/settings', require('./routes/settings.routes'))
 
 const PORT = config.get('port') || 5000
 
@@ -15,7 +16,8 @@ async function start(){
         await mongoose.connect(config.get('mongoUri'),{ // подключение к БД
             useNewUrlParser:true, 
             useUnifiedTopology:true,
-            useCreateIndex:true
+            useCreateIndex:true,
+            useFindAndModify: false
         }) 
         app.listen(PORT,()=>console.log('app has been started on ' + PORT))
     } catch (e) {
