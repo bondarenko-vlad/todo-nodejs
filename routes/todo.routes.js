@@ -11,7 +11,6 @@ router.get("/", auth, async (req, res) => {
     const tasks = await Task.find({ owner: req.user.userId });
     const user = await User.findById(req.user.userId);
     res.json({tasks, cards: user.cards});
-    console.log(users);
   } catch (error) {
     console.log(error);
     res.status(500).json("Something went wrong");
@@ -70,7 +69,6 @@ router.get("/cards", async (req, res) => {
 router.patch("/subscribe", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
-    console.log(user);
     if(user.cards.includes(req.body.id)) {
       await Cards.findByIdAndUpdate(req.body.id, {$pull: { subscribers:req.user.userId }});
       await User.findByIdAndUpdate(req.user.userId, {$pull:{cards:req.body.id}})
