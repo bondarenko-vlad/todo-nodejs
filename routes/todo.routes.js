@@ -60,23 +60,24 @@ router.put("/update", async (req, res) => {
 
 router.get("/cards", async (req, res) => {
   try {
-    const cards = await Cards.find({});
-    res.status(200).json(cards);
+    const userCards = await UserCard.find({});
+    const cardsInfo = await Cards.find({})
+    res.status(200).json({cardsInfo, userCards});
   } catch (error) {
-    res.status(500).json("Something went wrong");
+    res.status(500).json("Something went wrong" + error);
   }
 });
 
 router.patch("/subscribe", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
-    if(user.cards.includes(req.body.id)) {
-      const userCard = await UserCard.findOneAndDelete({userId:req.user.userId, cardId: req.body.id});
-      return res.status(201).json({message: 'Unsubscibed from:', userCard})
+    const userCards = await UserCard.findOne({userId:req.user.userId, cardId: req.body.id});
+    if(userCards) {
+      await userCards.delete();
+      return res.status(201).json({message: 'Unsubscibed from:' + userCards.cardId, userCards})
     }
-    const userCard = await UserCard({userId:req.user.userId, cardId: req.body.id});
-    await userCard.save();
-    res.status(201).json({message: 'Subscibed to:', userCard});
+    const newUserCard = await UserCard({userId:req.user.userId, cardId: req.body.id});
+    await newUserCard.save();
+    return res.status(201).json({message: 'Subscibed to:', newUserCard});
   } catch (error) {
     res.status(500).json("Something went wrong" + error);
   }
